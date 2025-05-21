@@ -1,4 +1,4 @@
-name: Azure Static Web Apps CI/CD
+name: Deploy Tech Logo Memory Match Game
 
 on:
   push:
@@ -13,38 +13,133 @@ jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
-    permissions:
-       id-token: write
-       contents: read
+    name: Build and Deploy
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           submodules: true
-          lfs: false
-      - name: Install OIDC Client from Core Package
-        run: npm install @actions/core@1.6.0 @actions/http-client
-      - name: Get Id Token
-        uses: actions/github-script@v6
-        id: idtoken
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-           script: |
-               const coredemo = require('@actions/core')
-               return await coredemo.getIDToken()
-           result-encoding: string
+          python-version: '3.9'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pygame
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      # Create a simple web interface to launch the game
+      - name: Create web interface
+        run: |
+          mkdir -p public
+          cat > public/index.html << 'EOL'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Tech Logo Memory Match Game</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                text-align: center;
+                background-color: #f5f5f5;
+              }
+              h1 {
+                color: #333;
+              }
+              .game-container {
+                background-color: white;
+                border-radius: 8px;
+                padding: 20px;
+                margin: 20px 0;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+              }
+              img {
+                max-width: 100%;
+                border-radius: 4px;
+                margin: 10px 0;
+              }
+              .download-btn {
+                background-color: #4CAF50;
+                color: white;
+                padding: 12px 24px;
+                text-decoration: none;
+                border-radius: 4px;
+                font-weight: bold;
+                display: inline-block;
+                margin: 20px 0;
+              }
+              .features {
+                text-align: left;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>Tech Logo Memory Match Game</h1>
+            
+            <div class="game-container">
+              <img src="game_preview.png" alt="Game Preview">
+              
+              <h2>About the Game</h2>
+              <p>A memory matching card game built with Pygame featuring iconic tech logos. Test your memory by matching pairs of tech company logos against the clock!</p>
+              
+              <h2>Features</h2>
+              <ul class="features">
+                <li><strong>Multiple Difficulty Levels:</strong> Choose between Easy, Medium, and Hard</li>
+                <li><strong>Countdown Timer:</strong> Race against time to find all matches</li>
+                <li><strong>Smooth Animations:</strong> Enjoy fluid card flip animations</li>
+                <li><strong>Tech-Themed Cards:</strong> Match logos from popular tech companies</li>
+                <li><strong>Score Tracking:</strong> Monitor your moves and completion time</li>
+              </ul>
+              
+              <a href="https://github.com/yourusername/tech-logo-memory-match/archive/refs/heads/main.zip" class="download-btn">Download Game</a>
+              
+              <h3>How to Run</h3>
+              <ol class="features">
+                <li>Download and extract the ZIP file</li>
+                <li>Install Python 3.x if you don't have it</li>
+                <li>Install Pygame: <code>pip install pygame</code></li>
+                <li>Run the game: <code>python memory_match.py</code></li>
+              </ol>
+            </div>
+          </body>
+          </html>
+          EOL
+          
+          # Copy game preview image to public folder
+          cp assets/game_preview.png public/ || echo "Game preview image not found"
+      
+      # Create a simple package.json to satisfy Azure Static Web Apps
+      - name: Create package.json
+        run: |
+          cat > package.json << 'EOL'
+          {
+            "name": "tech-logo-memory-match",
+            "version": "1.0.0",
+            "description": "Tech Logo Memory Match Game",
+            "scripts": {
+              "build": "echo 'Build completed'"
+            }
+          }
+          EOL
+      
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WHITE_SEA_0ED714F10 }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: "" # Built app content directory - optional
-          github_id_token: ${{ steps.idtoken.outputs.result }}
-          ###### End of Repository/Build Configurations ######
+          app_location: "/"
+          api_location: ""
+          output_location: "public"
+          skip_app_build: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -55,4 +150,5 @@ jobs:
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: "close"
