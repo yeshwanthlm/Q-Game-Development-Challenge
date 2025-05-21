@@ -30,7 +30,7 @@ A memory matching card game built with Pygame featuring iconic tech logos. Test 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/tech-logo-memory-match.git
+git clone https://github.com/yeshwanthlm/Q-Game-Development-Challenge.git
 cd tech-logo-memory-match
 
 # Install pygame if you don't have it
@@ -54,10 +54,14 @@ python memory_match.py
 | Hard   | 4x5       | 10    | 120 seconds |
 
 ## 📷 Screenshots
+### Main Menu:
+<img width="798" alt="Screenshot 2025-05-21 at 7 15 15 PM" src="https://github.com/user-attachments/assets/7b1b8a62-4ef0-4909-87cc-489dca6f4aad" />
 
-![Main Menu](<img width="798" alt="Screenshot 2025-05-21 at 7 15 15 PM" src="https://github.com/user-attachments/assets/7b1b8a62-4ef0-4909-87cc-489dca6f4aad" />)
-![Gameplay](<img width="798" alt="Screenshot 2025-05-21 at 7 15 36 PM" src="https://github.com/user-attachments/assets/ca1db2d7-506d-4cbd-93ab-9a6204b643db" />)
-![Victory Screen](<img width="798" alt="Screenshot 2025-05-21 at 7 16 00 PM" src="https://github.com/user-attachments/assets/39e26d37-1c44-4b69-b39c-b5d7ddd7f2d8" />)
+### Game Play:
+<img width="798" alt="Screenshot 2025-05-21 at 7 15 36 PM" src="https://github.com/user-attachments/assets/ca1db2d7-506d-4cbd-93ab-9a6204b643db" />
+
+### Victory Screen:
+<img width="798" alt="Screenshot 2025-05-21 at 7 16 00 PM" src="https://github.com/user-attachments/assets/39e26d37-1c44-4b69-b39c-b5d7ddd7f2d8" />
 
 ## 🛠️ Project Structure
 
