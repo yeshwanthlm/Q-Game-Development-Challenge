@@ -67,7 +67,7 @@ python memory_match.py
 
 ```
 tech-logo-memory-match/
-├── memory_match.py     # Main game file.
+├── memory_match.py     # Main game file
 ├── assets/             # Game assets directory
 │   ├── images/         # Card images and logos
 │   ├── fonts/          # Game fonts
